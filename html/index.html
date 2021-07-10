@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+/*************************************************************************
+*
+* ADOBE CONFIDENTIAL
+* ___________________
+*
+*  Copyright 2013, Adobe Systems Incorporated
+*  All Rights Reserved.
+*
+* NOTICE:  All information contained herein is, and remains
+* the property of Adobe Systems Incorporated and its suppliers,
+* if any.  The intellectual and technical concepts contained
+* herein are proprietary to Adobe Systems Incorporated and its
+* suppliers and are protected by trade secret or copyright law.
+* Dissemination of this information or reproduction of this material
+* is strictly forbidden unless prior written permission is obtained
+* from Adobe Systems Incorporated.
+**************************************************************************/
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<script src="../js/CSInterface.js"></script>
+
+<script>
+
+var httpServer;
+
+window.onload = function()
+{
+    var csLib = new CSInterface();
+
+    var getMogrtJSX =  csLib.getSystemPath(SystemPath.EXTENSION) + '/jsx/get_mogrt_text.jsx';
+    var readandSendJSX =  csLib.getSystemPath(SystemPath.EXTENSION) + '/jsx/read_and_set_mogrt.jsx';
+
+    var getMogrtScript = '$.evalFile("' + getMogrtJSX + '");';
+    var readandSendScript = '$.evalFile("' + readandSendJSX + '");';
+
+	
+	var hostEnv = csLib.getHostEnvironment();
+	var appVersion = hostEnv.appVersion;
+	var appId = hostEnv.appId;
+
+	var port = process.env.PORT_FREE;
+    var http = cep_node.require('http');
+	server = http.createServer(function (req, res)
+    {   
+        res.writeHead(200, {'Content-Type': 'application/json'});
+
+        if (req.url.split("=")[1] == "get_text") {
+            csLib.evalScript(getMogrtScript);
+            res.end(JSON.stringify({"command": "Get Text Done"}));
+        }
+        if (req.url.split("=")[1] == "set_text") {
+            csLib.evalScript(readandSendScript);
+            res.end(JSON.stringify({"Command": "Set Text Done"}));
+        }
+    }).listen(port, '127.0.0.1');
+
+
+};
+
+window.onunload = function()
+{
+    httpServer.close();
+}
+
+</script>
+</head>
+
+<body>
+</body>
+
+</html>
