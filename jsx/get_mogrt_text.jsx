@@ -875,6 +875,14 @@ if (!Date.prototype.toISOString) {
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
+var currentPort = $.getenv("CURRENT_PORT");
+var params = $.getenv("PARAMS_PORT_".concat(currentPort));
+var paramsSplit = params.split(";");
+var projectId = paramsSplit[0];
+var jobId = paramsSplit[1];
+var savePath = paramsSplit[2];
+var currentFile = paramsSplit[3];
+
 var getMogrtText = function getMogrtText(sequence) {
   var jsons = [];
   var videoTracks = sequence.videoTracks;
@@ -921,8 +929,8 @@ var getMogrtText = function getMogrtText(sequence) {
   return jsons;
 };
 
-$.writeln("Opening ".concat($.getenv("CURRENT_FILE")));
-app.openDocument($.getenv("CURRENT_FILE"));
+$.writeln("Opening ".concat(currentFile));
+app.openDocument(currentFile);
 sleep(3000);
 var sequences = app.project.sequences;
 
@@ -935,7 +943,7 @@ for (i = 0; i < sequences.length; i++) {
     jsonsStr = jsonsStr.concat("".concat(JSON.stringify(jsons[j]), "\n\t"));
   }
 
-  var filename = "".concat($.getenv("SAVE_PATH"), "/").concat(seqName, "_").concat($.getenv("PROJECT_ID"), "_").concat($.getenv("JOB_ID"), ".json");
+  var filename = "".concat(savePath, "/").concat(seqName, "_").concat(projectId, "_").concat(jobId, ".json");
   var jsonFile = File(filename);
   $.writeln("Writing to ".concat(filename));
   jsonFile.open("w");

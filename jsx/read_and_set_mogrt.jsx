@@ -1,4 +1,3 @@
-#include "json2.js";
 //trim.js
 /*
 https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
@@ -876,8 +875,16 @@ if (!Date.prototype.toISOString) {
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
+var currentPort = $.getenv("CURRENT_PORT");
+var params = $.getenv("PARAMS_PORT_".concat(currentPort));
+var paramsSplit = params.split(";");
+var projectId = paramsSplit[0];
+var jobId = paramsSplit[1];
+var savePath = paramsSplit[2];
+var currentFile = paramsSplit[3];
+
 var readFileAndParse = function readFileAndParse(seqName) {
-  var filename = "".concat($.getenv("SAVE_PATH"), "/").concat(seqName, "_").concat($.getenv("PROJECT_ID"), "_").concat($.getenv("JOB_ID"), ".json");
+  var filename = "".concat(savePath, "/").concat(seqName, "_").concat(projectId, "_").concat(jobId, ".json");
   var testtextfile = File(filename);
   testtextfile.encoding = 'UTF8';
   testtextfile.open("r");
@@ -895,7 +902,7 @@ var readFileAndParse = function readFileAndParse(seqName) {
   return jsons;
 };
 
-app.openDocument($.getenv("CURRENT_FILE"));
+app.openDocument(currentFile);
 sleep(3000);
 
 for (o = 0; o < app.project.sequences.length; o++) {
